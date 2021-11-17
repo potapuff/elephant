@@ -8,7 +8,6 @@ import edu.sumdu.tss.elephant.helper.exception.HttpError500;
 import edu.sumdu.tss.elephant.helper.exception.NotFoundException;
 import edu.sumdu.tss.elephant.helper.utils.ExceptionUtils;
 import edu.sumdu.tss.elephant.helper.utils.MessageBundle;
-import edu.sumdu.tss.elephant.helper.utils.StringUtils;
 import edu.sumdu.tss.elephant.helper.utils.ValidatorHelper;
 import edu.sumdu.tss.elephant.model.DbUserService;
 import edu.sumdu.tss.elephant.model.User;
@@ -75,7 +74,7 @@ public class RegistrationController extends AbstractController {
             throw new NotFoundException("User with this token not found (or token was renewed)");
         }
         user.setRole(UserRole.BASIC_USER.getValue());
-        user.setToken(StringUtils.uuid());
+        user.resetToken();
         UserService.save(user);
         context.sessionAttribute(Keys.SESSION_CURRENT_USER_KEY, user);
         context.sessionAttribute(Keys.INFO_KEY, "Email approved");

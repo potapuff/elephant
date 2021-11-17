@@ -14,7 +14,7 @@
 </nav>
 <div class="tab-content" id="connection-details-$dbName">
     <div class="tab-pane fade show active" id="jdbc-$dbName" role="tabpanel" aria-labelledby="jdbc-$dbName">
-        jdbc:postgresql://$host:$port/$base.name?user=$currentUser.username&password=$currentUser.dbPassword&ssl=true
+        jdbc:postgresql://$host:$port/$base.name?user=$currentUser.username&password=$currentUser.dbPassword
     </div>
     <div class="tab-pane fade" id="client-$dbName" role="tabpanel" aria-labelledby="client-$dbName">
         <div class="form-floating mb-3">

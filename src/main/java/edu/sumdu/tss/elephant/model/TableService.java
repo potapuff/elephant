@@ -22,7 +22,11 @@ public class TableService {
                     "WHERE /*schemaname*/ relname = :table";
 
     public static int getTableSize(String database, String table) {
-        return DBPool.getConnection(database).open().createQuery(TABLE_SIZE_SQL).addParameter("table", table).executeScalar(Integer.class);
+        try {
+            return DBPool.getConnection(database).open().createQuery(TABLE_SIZE_SQL).addParameter("table", table).executeScalar(Integer.class);
+        } catch (java.lang.NullPointerException ex) {
+            return 0;
+        }
     }
 
     public static Table byName(String database, String tableName, int limit, int offset) {

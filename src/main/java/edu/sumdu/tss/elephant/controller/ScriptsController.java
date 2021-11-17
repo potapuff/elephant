@@ -32,9 +32,14 @@ public class ScriptsController extends AbstractController {
     private static void create(Context context) {
         var database = currentDB(context);
         var currentUser = currentUser(context);
+        int currentScriptCount = ScriptService.list(database.getName()).size();
+        if (currentScriptCount >= currentUser.role().maxScriptsPerDB()) {
+            ViewHelper.softError("You limit reached",context);
+            return;
+        }
+
         var file = context.uploadedFile("file");
-        System.out.println("file:");
-        System.out.println(file);
+        var description = context.formParamAsClass("description",String.class).getOrDefault("");
         String path = UserService.userStoragePath(currentUser.getUsername()) +
                 File.separator + "scripts" +
                 File.separator + database.getName() +
@@ -49,6 +54,7 @@ public class ScriptsController extends AbstractController {
         }
         Script script = new Script();
         script.setFilename(file.getFilename());
+        script.setDescription(description);
         script.setSize(file.getSize());
         script.setPath(path);
         script.setDatabase(database.getName());
@@ -128,7 +134,7 @@ public class ScriptsController extends AbstractController {
         String scriptId = context.pathParam("script");
         String dbName = currentDB(context).getName();
         Script script = ScriptService.byId(Integer.valueOf(scriptId));
-        if (script.getDatabase().equals(dbName)) {
+        if (!script.getDatabase().equals(dbName)) {
             throw new NotFoundException("Script not found");
         }
         ScriptService.destroy(script);

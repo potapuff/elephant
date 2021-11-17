@@ -32,8 +32,8 @@ public class TableController extends AbstractController {
     public static void preview_table(Context context) {
         Database database = currentDB(context);
         String tableName = context.pathParam("table");
-        int limit = context.queryParamAsClass("limit", Integer.class).getOrDefault(10);
-        int offset = context.queryParamAsClass("offset", Integer.class).getOrDefault(1);
+        int limit = context.queryParamAsClass("limit", Integer.class).check(it-> it>0 && it < 10000,"Limit must be a positive").getOrDefault(10);
+        int offset = context.queryParamAsClass("offset", Integer.class).check(it-> it>0 && it < 10000,"Offset must be a positive").getOrDefault(0);
         var table = TableService.byName(database.getName(), tableName, limit, offset * limit);
         int size = TableService.getTableSize(database.getName(), tableName);
 

@@ -11,7 +11,7 @@
                 <div class="row">
                     <div class="col">
                         <div class="form-group">
-                            <label for="web-password">$msg.get('login.reset_password.passwod')</label>
+                            <label for="web-password">$msg.get('login.reset_password.password')</label>
                             <input type="text" class="form-control" id="web-password" name="password"
                                    aria-describedby="web-password-help">
                             <small id="web-password-help" class="form-text text-muted">$msg.get(

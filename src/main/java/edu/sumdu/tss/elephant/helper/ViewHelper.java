@@ -10,10 +10,7 @@ import edu.sumdu.tss.elephant.model.User;
 import io.javalin.core.util.JavalinLogger;
 import io.javalin.http.Context;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public final class ViewHelper {
@@ -103,7 +100,7 @@ public final class ViewHelper {
             if (i != currentPage) {
                 pager.append(String.format("<li class=\"page-item\"><a class=\"page-link\" href=\"?offset=%d\">%d</a></li>\n", i, i));
             } else {
-                pager.append(String.format("<li class=\"page-item\">%d</li>\n", i));
+                pager.append(String.format("<li class=\"page-item active\"><a class=\"page-link\" href=\"#\">%d</a></li>\n", i));
             }
         }
         pager.append("</ul>\n</nav>");
@@ -122,4 +119,19 @@ public final class ViewHelper {
         return matcher.find() ? matcher.group(1) : null;
     }
 
+    /**
+     *
+     *  Redirect back with error message
+     * @param message message for an error
+     * @param context request context
+     */
+    public static void softError(String message, Context context) {
+        context.sessionAttribute(Keys.ERROR_KEY, message);
+        ViewHelper.redirectBack(context);
+
+    }
+
+    public static void redirectBack(Context context) {
+        context.redirect(Optional.ofNullable(context.header("Referer")).orElse("/"));
+    }
 }

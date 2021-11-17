@@ -15,12 +15,26 @@ public class DatabaseService {
     private static final ParameterizedStringFactory CREATE_DATABASE_SQL = new ParameterizedStringFactory("CREATE database :name WITH OWNER :owner TABLESPACE :tablespace");
     private static final String REGISTER_DATABASE_SQL = "insert into databases(name, owner) values(:name, :owner)";
 
+    /**
+     *  Return Database with given name owned by user
+     *
+     * If user try act with DB owned to other user code throw AccessRestrictedException
+     * @return Database owned to current user
+    */
+
     public static Database activeDatabase(String owner, String dbName) {
         Database database = DatabaseService.byName(dbName);
         if (database.getOwner().equals(owner)) {
             return database;
         }
         throw new AccessRestrictedException("Database is inaccessible for this user");
+    }
+
+
+    private static final String PG_DB_SQL = "select datname from pg_database where datname=:name";
+    public static boolean exists(String dbName){
+        var database = DBPool.getConnection().open().createQuery(PG_DB_SQL).addParameter("name", dbName).executeScalar(String.class);
+        return database != null;
     }
 
     public static Database byName(String dbName) {
@@ -58,6 +72,12 @@ public class DatabaseService {
 
     public static void drop(Database database) {
         var connection = DBPool.getConnection().open();
+        for (Backup point : BackupService.list(database.getName())) {
+            BackupService.delete(database.getOwner(), point.getDatabase(), point.getPoint());
+        }
+        for (Script script : ScriptService.list(database.getName())) {
+           ScriptService.destroy(script);
+        }
         String query = DROP_DATABASE_SQL.addParameter("name", database.getName()).toString();
         connection.createQuery(query, false)
                 .executeUpdate();

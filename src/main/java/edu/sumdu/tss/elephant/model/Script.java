@@ -10,6 +10,7 @@ public class Script {
     private String filename;
     private String path;
     private String database;
+    private String description;
     private long size;
     private Date createdAt;
     private Date updatedAt;

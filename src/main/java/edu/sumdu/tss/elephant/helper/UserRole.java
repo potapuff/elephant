@@ -21,6 +21,11 @@ public enum UserRole implements RouteRole {
         public long maxBackupsPerDB() {
             return 0;
         }
+
+        @Override
+        public long maxScriptsPerDB() {
+            return 0;
+        }
     },
     UNCHEKED(1) {
         public long maxConnections() {
@@ -36,6 +41,11 @@ public enum UserRole implements RouteRole {
         }
 
         public long maxBackupsPerDB() {
+            return 0;
+        }
+
+        @Override
+        public long maxScriptsPerDB() {
             return 0;
         }
     },
@@ -54,6 +64,9 @@ public enum UserRole implements RouteRole {
         }
 
         public long maxBackupsPerDB() {
+            return 1;
+        }
+        public long maxScriptsPerDB() {
             return 2;
         }
     },
@@ -63,15 +76,19 @@ public enum UserRole implements RouteRole {
         }
 
         public long maxDB() {
-            return 2;
+            return 3;
         }
 
         public long maxStorage() {
-            return 100 * FileUtils.ONE_MB;
+            return 50 * FileUtils.ONE_MB;
         }
 
         public long maxBackupsPerDB() {
-            return 10;
+            return 5;
+        }
+
+        public long maxScriptsPerDB() {
+            return 5;
         }
     },
     ADMIN(4) {
@@ -88,6 +105,10 @@ public enum UserRole implements RouteRole {
         }
 
         public long maxBackupsPerDB() {
+            return 10;
+        }
+
+        public long maxScriptsPerDB() {
             return 10;
         }
     };
@@ -118,4 +139,6 @@ public enum UserRole implements RouteRole {
     public abstract long maxStorage();
 
     public abstract long maxBackupsPerDB();
+
+    public abstract long maxScriptsPerDB();
 }

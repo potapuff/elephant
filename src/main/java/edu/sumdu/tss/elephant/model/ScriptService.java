@@ -27,10 +27,6 @@ public class ScriptService {
         }
     }
 
-    //"ON CONFLICT(data) DO UPDATE \n" +
-    //"  SET path = excluded.path, \n" +
-    //"      \"updatedAt\" = now();";
-
     private static final String INSERT_SQL =
             "insert into scripts(database, filename, path) " +
                     "values (:database, :filename, :path)";

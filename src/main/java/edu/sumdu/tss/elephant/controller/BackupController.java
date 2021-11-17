@@ -1,5 +1,6 @@
 package edu.sumdu.tss.elephant.controller;
 
+import edu.sumdu.tss.elephant.helper.Keys;
 import edu.sumdu.tss.elephant.helper.UserRole;
 import edu.sumdu.tss.elephant.helper.ViewHelper;
 import edu.sumdu.tss.elephant.model.Backup;
@@ -18,16 +19,30 @@ public class BackupController extends AbstractController {
     public static void restore(Context context) {
         Backup point = setupPoint(context);
         BackupService.restore(currentUser(context).getUsername(), point.getDatabase(), point.getPoint());
+        context.sessionAttribute(Keys.INFO_KEY, "Restore performed successfully");
         context.redirect(BASIC_PAGE.replace("{database}", point.getDatabase()));
     }
 
     public static void create(Context context) {
         String dbName = currentDB(context).getName();
+        var currentUser = currentUser(context);
+        int currentBackupCount = BackupService.list(dbName).size();
+        if (currentBackupCount >= currentUser.role().maxBackupsPerDB()) {
+            ViewHelper.softError("You limit reached",context);
+            return;
+        }
+
         String point = context.formParam("point");
         if (point == null) {
             point = context.pathParam("point");
         }
-        BackupService.perform(currentUser(context).getUsername(), dbName, point);
+        if (point==null || point.isBlank()){
+            ViewHelper.softError("Point name can't be empty", context);
+            return;
+        }
+
+        BackupService.perform(currentUser.getUsername(), dbName, point);
+        context.sessionAttribute(Keys.INFO_KEY, "Backup created successfully");
         context.redirect(BASIC_PAGE.replace("{database}", dbName));
     }
 

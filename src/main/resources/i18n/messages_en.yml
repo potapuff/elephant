@@ -8,12 +8,14 @@ controls:
     sign_in: "Sign In"
     sign_up: "Sign Up"
     logout: "Logout"
+    update: "Update"
 registration:
   form:
     email: "Email address"
     password: "Password"
     password_c: "Password conformation"
     button: "Sign up"
+    disclamer: "By clicking <b>Sign up</b>, you agree to the terms of use."
 login:
   SignIn: "Sign me in, please"
   form:
@@ -40,6 +42,7 @@ login:
     button: "Reset bassword"
 mail:
   conformation: "Elephant: Welcome to the club buddy"
+  reset: "Elephant: Reset password"
 validation:
   mail:
     empty: "Mail can't be empty"
@@ -70,7 +73,7 @@ database:
     approve: "You need to approve you email before can create new DB"
     limits: "You reach you DB limit - delete one or upgrade plan."
   explorier:
-    title: "Explore"
+    title: "Database Explorer"
     description: "Investigate your database. Look to your data from browser."
   script:
     title: "Scripts"

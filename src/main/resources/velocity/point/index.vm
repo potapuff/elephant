@@ -43,19 +43,19 @@
 </div>
 
 <div class="container">
-    <h3>$msg.get("database.backup.from.title")</h3>
+    <h3>$msg.get("database.backup.form.title")</h3>
     #if($currentUser.role().maxBackupsPerDB() >= $points.size())
         <form action="/database/$database.name/point/" method="post" class="shadow border">
             <input name="_csrf" value="$csrf" type="hidden"/>
             <div class="form-floating mb-3">
                 <input type="text" name="point" class="form-control" id="floatingInput" placeholder="point">
-                <label for="floatingInput">$msg.get("database.script.form.name")</label>
+                <label for="floatingInput">$msg.get("database.backup.form.name")</label>
             </div>
-            <button class="w-100 btn" type="submit">$msg.get("database.script.form.create_button")</button>
+            <button class="w-100 btn" type="submit">$msg.get("database.backup.form.create_button")</button>
         </form>
     #else
         $msg.get("database.script.form.limit")
-        <button class="w-100 btn disabled" type="submit">$msg.get("database.script.form.create_button")</button>
+        <button class="w-100 btn disabled" type="submit">$msg.get("database.backup.form.create_button")</button>
     #end
 </div>
 

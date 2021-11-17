@@ -2,6 +2,7 @@ package edu.sumdu.tss.elephant.controller;
 
 import edu.sumdu.tss.elephant.helper.Keys;
 import edu.sumdu.tss.elephant.helper.UserRole;
+import edu.sumdu.tss.elephant.helper.ViewHelper;
 import edu.sumdu.tss.elephant.helper.utils.StringUtils;
 import edu.sumdu.tss.elephant.model.Database;
 import edu.sumdu.tss.elephant.model.DatabaseService;
@@ -27,7 +28,13 @@ public class DatabaseController extends AbstractController {
 
     public static void create(Context context) {
         User user = currentUser(context);
-        String dbName = StringUtils.randomAlphaString(8);
+        int currentScriptCount = DatabaseService.forUser(user.getUsername()).size();
+        if (currentScriptCount >= user.role().maxDB()) {
+            ViewHelper.softError("You limit reached",context);
+            return;
+        }
+
+        String dbName = StringUtils.randomAlphaString(Database.NAME_SIZE);
         DatabaseService.create(dbName, user.getUsername(), user.getUsername());
         LogService.push(context, dbName, "Database created");
         context.sessionAttribute(Keys.INFO_KEY, "Database created");

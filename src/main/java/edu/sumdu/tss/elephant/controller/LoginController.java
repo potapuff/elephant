@@ -3,6 +3,7 @@ package edu.sumdu.tss.elephant.controller;
 import edu.sumdu.tss.elephant.helper.Keys;
 import edu.sumdu.tss.elephant.helper.MailService;
 import edu.sumdu.tss.elephant.helper.UserRole;
+import edu.sumdu.tss.elephant.helper.ViewHelper;
 import edu.sumdu.tss.elephant.helper.enums.Lang;
 import edu.sumdu.tss.elephant.helper.exception.HttpError500;
 import edu.sumdu.tss.elephant.helper.exception.NotFoundException;
@@ -13,6 +14,7 @@ import edu.sumdu.tss.elephant.helper.utils.ValidatorHelper;
 import edu.sumdu.tss.elephant.model.User;
 import edu.sumdu.tss.elephant.model.UserService;
 import io.javalin.Javalin;
+import io.javalin.core.util.JavalinLogger;
 import io.javalin.http.Context;
 
 import javax.mail.MessagingException;
@@ -69,6 +71,7 @@ public class LoginController extends AbstractController {
                         .check(Objects::nonNull, mb.get("validation.mail.empty"))
                         .check(ValidatorHelper::isValidMail, mb.get("validation.mail.invalid"))
                         .get();
+                JavalinLogger.info(email);
                 var user = UserService.byLogin(email);
                 var lang = Lang.byValue(user.getLanguage());
                 MailService.sendResetLink(user.getToken(), user.getLogin(), lang);
@@ -95,7 +98,7 @@ public class LoginController extends AbstractController {
         MessageBundle mb = currentMessages(context);
         try {
             if (context.method().equals("POST")) {
-                String token = context.formParamAsClass("password", String.class)
+                String token = context.formParamAsClass("token", String.class)
                         .check(it -> it != null && !it.isBlank(), mb.get("validation.token.empty"))
                         .get();
                 var password = context.formParamAsClass("password", String.class)
@@ -104,7 +107,7 @@ public class LoginController extends AbstractController {
                         .get();
                 var user = UserService.byToken(token);
                 user.setPassword(password);
-                //TODO: reset token
+                user.resetToken();
                 UserService.save(user);
                 context.sessionAttribute(Keys.INFO_KEY, mb.get("login.reset.success_reset"));
                 context.redirect(BASIC_PAGE);
@@ -112,6 +115,7 @@ public class LoginController extends AbstractController {
             }
         } catch (NotFoundException ex) {
             context.sessionAttribute(Keys.ERROR_KEY, mb.get("validation.user.not_found_token"));
+            context.redirect(BASIC_PAGE);
         } catch (Exception ex) {
             ExceptionUtils.wrapError(context, ex);
         }
@@ -140,7 +144,7 @@ public class LoginController extends AbstractController {
             ex.printStackTrace();
         }
         context.sessionAttribute(Keys.LANG_KEY, Optional.ofNullable(lang).orElse(Keys.get("DEFAULT_LANG")));
-        context.redirect(Optional.ofNullable(context.header("Referer")).orElse("/"));
+        ViewHelper.redirectBack(context);
     }
 
     public void register(Javalin app) {

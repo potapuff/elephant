@@ -9,7 +9,6 @@ import edu.sumdu.tss.elephant.middleware.CSRFFilter;
 import edu.sumdu.tss.elephant.middleware.CustomAccessManager;
 import io.javalin.Javalin;
 import io.javalin.core.util.JavalinLogger;
-import io.javalin.http.Context;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.plugin.openapi.OpenApiOptions;
 import io.javalin.plugin.openapi.OpenApiPlugin;
@@ -20,22 +19,9 @@ import io.swagger.v3.oas.models.info.Info;
 import java.io.File;
 
 public class Server {
-    private static final boolean enableCors = true;
     private final Javalin app;
 
     {
-    /* Load stats from GIT
-        try {
-            FileInputStream fis;
-            Properties properties = new Properties();
-            String propFileName = "git.properties";
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
-            properties.load(inputStream);
-            JavalinLogger.info(properties.getProperty("git.commit.id.full"));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    */
         app = Javalin.create(
                         config -> {
                             config.addStaticFiles("/public", Location.CLASSPATH);
@@ -72,17 +58,6 @@ public class Server {
         new Server().start(Integer.parseInt(Keys.get("APP.PORT")));
     }
 
-    /**
-     * Method sets the access to sending the requests to the server
-     *
-     * @param ctx Context that contains the header with access
-     */
-    public static void cors(final Context ctx) {
-        ctx.header("Cache-Control", "no-cache, no-store");
-        if (enableCors) {
-            ctx.header("Access-Control-Allow-Origin", "*");
-        }
-    }
 
     public void start(final int port) {
         this.app.start(port);

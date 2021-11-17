@@ -16,7 +16,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-
+//TODO: reset temaplte for html+password
 public class MailService {
 
     private static final MailService mail = new MailService();
@@ -50,23 +50,7 @@ public class MailService {
         message.setFrom(new InternetAddress(mail.from));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));
         message.setSubject(new MessageBundle(lang.toString()).get("mail.conformation"));
-        Multipart mmp = new MimeMultipart("alternative");
-
-        MimeBodyPart textPart = new MimeBodyPart();
-        String text = mail.getResource("i18n/mail_conformation.txt", lang);
-        if (text != null) {
-            textPart.setText(String.format(text, Keys.get("APP.URL"), token), "utf-8");
-            mmp.addBodyPart(textPart);
-        }
-
-        MimeBodyPart htmlPart = new MimeBodyPart();
-        String html = mail.getResource("i18n/mail_conformation.html", lang);
-        if (html != null) {
-            htmlPart.setContent(String.format(html, Keys.get("APP.URL"), token), "text/html; charset=utf-8");
-            mmp.addBodyPart(htmlPart);
-        }
-
-        message.setContent(mmp);
+        message.setContent(generateContent("mail_conformation", new Object[] {Keys.get("APP.URL"), token}, lang));
         Transport.send(message);
     }
 
@@ -74,17 +58,8 @@ public class MailService {
         Message message = new MimeMessage(mail.session);
         message.setFrom(new InternetAddress(mail.from));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));
-        if (lang == Lang.UK) {
-            message.setSubject("Elephant: Відновлення паролю");
-            message.setText(String.format(
-                    "Ваше посилання для відновлення паролю,  %s/login/reset?token=%s" +
-                            " (Якщо ви не надсилали запит проігноруйте це повідомлення)", Keys.get("APP.URL"), token));
-        } else {
-            message.setSubject("Elephant: Reset password");
-            message.setText(String.format(
-                    "Hello you reset link ,  %s/login/reset?token=%s" +
-                            " (if you did not reset you password then just ignore this message)", Keys.get("APP.URL"), token));
-        }
+        message.setSubject(new MessageBundle(lang.toString()).get("mail.reset"));
+        message.setContent(generateContent("password_reset", new Object[] {Keys.get("APP.URL"), token}, lang));
         Transport.send(message);
     }
 
@@ -103,6 +78,25 @@ public class MailService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static Multipart generateContent(final String template, Object[] params, Lang lang) throws MessagingException {
+        Multipart mmp = new MimeMultipart("alternative");
+
+        MimeBodyPart textPart = new MimeBodyPart();
+        String text = mail.getResource("i18n/"+template+".txt", lang);
+        if (text != null) {
+            textPart.setText(String.format(text, params), "utf-8");
+            mmp.addBodyPart(textPart);
+        }
+
+        MimeBodyPart htmlPart = new MimeBodyPart();
+        String html = mail.getResource("i18n/"+template+".html", lang);
+        if (html != null) {
+            htmlPart.setContent(String.format(html, params), "text/html; charset=utf-8");
+            mmp.addBodyPart(htmlPart);
+        }
+        return mmp;
     }
 }
 

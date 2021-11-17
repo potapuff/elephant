@@ -18,7 +18,7 @@
                                     $script.filename
                                 </h6>
                             </a>
-                            <span class="text-small">$script.filename</span>
+                            <span class="text-small">$!script.description</span>
                         </div>
                         <div class="card-meta">
                             <div class="card-options">
@@ -50,8 +50,12 @@
     <form action="/database/$database.name/script/" method="post" class="shadow border" enctype="multipart/form-data">
         <input name="_csrf" value="$!csrf" type="hidden"/>
         <div class="form-floating mb-3">
-            <input type="file" name="file">
+            <label for="description">$msg.get("database.script.description")</label>
+            <textarea id="description" name="description" style="width: 100%;"></textarea>
+        </div>
 
+        <div class="form-floating mb-3">
+            <input type="file" name="file">
         </div>
         <button class="w-100 btn" type="submit">$msg.get("database.script.form.upload_button")</button>
     </form>

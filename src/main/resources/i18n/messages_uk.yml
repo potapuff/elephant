@@ -8,12 +8,14 @@ controls:
     sign_in: Увійти
     sign_up: Зареєструватися
     logout: Вийти
+    update: Оновити
 registration:
   form:
     email: Адреса електронної пошти
     password: Пароль
     password_c: Підтвердження паролю
     button: Зареєструватись
+    disclamer: Натиснувши "Зареєструватись", ви погоджуєтеся з умовами використання.
 login:
   SignIn: Зареєструватись
   form:
@@ -40,6 +42,7 @@ login:
     button: Скинути пароль
 mail:
   conformation: 'Elephant: registration letter'
+  reset: "Elephant: Відновлення паролю"
 validation:
   mail:
     empty: Пошта не може бути порожньою

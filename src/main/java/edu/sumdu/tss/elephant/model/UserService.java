@@ -3,6 +3,7 @@ package edu.sumdu.tss.elephant.model;
 import edu.sumdu.tss.elephant.helper.DBPool;
 import edu.sumdu.tss.elephant.helper.Keys;
 import edu.sumdu.tss.elephant.helper.UserRole;
+import edu.sumdu.tss.elephant.helper.exception.NotFoundException;
 import edu.sumdu.tss.elephant.helper.utils.CmdUtil;
 import edu.sumdu.tss.elephant.helper.utils.ParameterizedStringFactory;
 import edu.sumdu.tss.elephant.helper.utils.StringUtils;
@@ -35,7 +36,11 @@ public class UserService {
     private static final String USER_BY_LOGIN_SQL = "SELECT * FROM users WHERE login = :login";
     public static User byLogin(String login) {
         try (Connection con = DBPool.getConnection().open()) {
-            return con.createQuery(USER_BY_LOGIN_SQL).addParameter("login", login).executeAndFetchFirst(User.class);
+            var user = con.createQuery(USER_BY_LOGIN_SQL).addParameter("login", login).executeAndFetchFirst(User.class);
+            if (user == null){
+                throw new NotFoundException(String.format("User with mail %s not found", login));
+            }
+            return  user;
         }
     }
 
@@ -106,17 +111,21 @@ public class UserService {
     public static User newDefaultUser() {
         User user = new User();
         user.setRole(UserRole.UNCHEKED.getValue());
-        user.setPrivateKey(StringUtils.randomAlphaString(20));
-        user.setPublicKey(StringUtils.randomAlphaString(20));
-        user.setToken(StringUtils.uuid());
-        user.setUsername(StringUtils.randomAlphaString(8));
-        user.setDbPassword(StringUtils.randomAlphaString(20));
+        user.setPrivateKey(StringUtils.randomAlphaString(User.API_KEY_SIZE));
+        user.setPublicKey(StringUtils.randomAlphaString(User.API_KEY_SIZE));
+        user.resetToken();
+        user.setUsername(StringUtils.randomAlphaString(User.USERNAME_SIZE));
+        user.setDbPassword(StringUtils.randomAlphaString(User.DB_PASSWORD_SIZE));
         return user;
     }
 
     public static User byToken(String token) {
         try (Connection con = DBPool.getConnection().open()) {
-            return con.createQuery(USER_BY_TOKEN_SQL).addParameter("token", token).executeAndFetchFirst(User.class);
+            var user=  con.createQuery(USER_BY_TOKEN_SQL).addParameter("token", token).executeAndFetchFirst(User.class);
+            if (user == null){
+                throw new NotFoundException(String.format("User with token %s not found", token));
+            }
+            return  user;
         }
     }
 }
