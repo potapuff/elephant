@@ -18,7 +18,7 @@ public class SqlController extends AbstractController {
         super(app);
     }
 
-    private static void show(Context context) {
+    public static void show(Context context) {
         var model = currentModel(context);
         model.put("query", context.sessionAttribute("query"));
         context.sessionAttribute("query", null);
@@ -26,7 +26,7 @@ public class SqlController extends AbstractController {
         context.render("/velocity/sql/show.vm", model);
     }
 
-    private static void run(Context context) {
+    public static void run(Context context) {
         String query = context.formParam("query");
 
         StringBuilder builder = new StringBuilder(500);

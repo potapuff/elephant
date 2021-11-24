@@ -29,7 +29,7 @@ public class ScriptsController extends AbstractController {
         super(app);
     }
 
-    private static void create(Context context) {
+    public static void create(Context context) {
         var database = currentDB(context);
         var currentUser = currentUser(context);
         int currentScriptCount = ScriptService.list(database.getName()).size();
@@ -63,7 +63,7 @@ public class ScriptsController extends AbstractController {
         context.redirect(BASIC_PAGE.replace("{database}", database.getName()));
     }
 
-    private static void show(Context context) {
+    public static void show(Context context) {
         String scriptId = context.pathParam("script");
         Script script = ScriptService.byId(Integer.valueOf(scriptId));
 
@@ -77,14 +77,14 @@ public class ScriptsController extends AbstractController {
         }
     }
 
-    private static void index(Context context) {
+    public static void index(Context context) {
         var model = currentModel(context);
         model.put("scripts", ScriptService.list(currentDB(context).getName()));
         ViewHelper.breadcrumb(context).add("Scripts");
         context.render("/velocity/script/index.vm", model);
     }
 
-    private static void run(Context context) {
+    public static void run(Context context) {
         Statement statement = null;
         Connection connection = null;
         var list = new ArrayList<Pair<String, String>>(500);
@@ -130,7 +130,7 @@ public class ScriptsController extends AbstractController {
         context.render("/velocity/script/run.vm", model);
     }
 
-    private static void delete(Context context) {
+    public static void delete(Context context) {
         String scriptId = context.pathParam("script");
         String dbName = currentDB(context).getName();
         Script script = ScriptService.byId(Integer.valueOf(scriptId));

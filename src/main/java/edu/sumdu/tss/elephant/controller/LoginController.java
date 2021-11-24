@@ -63,7 +63,7 @@ public class LoginController extends AbstractController {
         context.redirect(BASIC_PAGE, 302);
     }
 
-    private static void resetLink(Context context) {
+    public static void resetLink(Context context) {
         MessageBundle mb = currentMessages(context);
         try {
             if (context.method().equals("POST")) {
