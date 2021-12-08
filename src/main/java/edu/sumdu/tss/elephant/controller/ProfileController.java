@@ -46,7 +46,7 @@ public class ProfileController extends AbstractController {
     public static void resetWebPassword(Context context) {
         User user = currentUser(context);
         //TODO add password validation
-        user.setPassword(context.formParam("web-password"));
+        user.password(context.formParam("web-password"));
         UserService.save(user);
         context.sessionAttribute(Keys.INFO_KEY, "Web user password was changed");
         context.redirect(BASIC_PAGE);

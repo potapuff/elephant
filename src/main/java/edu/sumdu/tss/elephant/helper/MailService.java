@@ -29,7 +29,7 @@ public class MailService {
         Properties properties = System.getProperties();
         properties.put("mail.smtp.host", Keys.get("EMAIL.HOST"));
         properties.put("mail.smtp.port", Keys.get("EMAIL.PORT"));
-        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.ssl.enable", Keys.get("EMAIL.SSL"));
         properties.put("mail.smtp.auth", "true");
         session = Session.getInstance(properties, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {

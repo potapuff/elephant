@@ -114,20 +114,19 @@ public class BackupService {
         } catch (Exception ex) {
             throw new HttpError500(ex);
         }
-        CmdUtil.exec(String.format("pg_dump --format=custom --dbname=%s  --file=\"%s\"", DBPool.dbUtilUrl(database), path));
+        CmdUtil.exec(String.format("pg_dump --format=custom --dbname=%s  --file=%s", DBPool.dbUtilUrl(database), path));
     }
 
     private static void restoreBackup(String owner, String database, String pointName) {
         String path = filePath(owner, database, pointName);
-        //DBPool.getConnection().open().createQuery(DROP_DB.addParameter("database", database).toString(), false).executeUpdate();
         var recreate = DatabaseService.exists(database) ? "--clean" : "";
-        CmdUtil.exec(String.format("pg_restore %s --create --dbname=%s \"%s\"", recreate, DBPool.dbUtilUrl(DBPool.DEFAULT_DATABASE), path));
+        CmdUtil.exec(String.format("pg_restore %s --create --dbname=%s %s", recreate, DBPool.dbUtilUrl(DBPool.DEFAULT_DATABASE), path));
     }
 
     public static String filePath(String owner, String database, String pointName) {
         return UserService.userStoragePath(owner) +
                 File.separator + "backups" +
                 File.separator + database +
-                File.separator + pointName;
+                File.separator + pointName.replaceAll("\s","\\ ");
     }
 }

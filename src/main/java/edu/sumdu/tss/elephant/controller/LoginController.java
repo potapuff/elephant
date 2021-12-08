@@ -52,7 +52,6 @@ public class LoginController extends AbstractController {
         } catch (Exception ex) {
             ExceptionUtils.wrapError(context, ex);
         }
-
         if (user != null && user.getPassword().equals(user.crypt(password))) {
             context.sessionAttribute(Keys.SESSION_CURRENT_USER_KEY, user);
             context.redirect(HomeController.BASIC_PAGE);
@@ -106,7 +105,7 @@ public class LoginController extends AbstractController {
                         .check(ValidatorHelper::isValidPassword, mb.get("validation.invalid.empty"))
                         .get();
                 var user = UserService.byToken(token);
-                user.setPassword(password);
+                user.password(password);
                 user.resetToken();
                 UserService.save(user);
                 context.sessionAttribute(Keys.INFO_KEY, mb.get("login.reset.success_reset"));

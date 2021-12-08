@@ -26,11 +26,13 @@ public class User {
     private String language;
 
 
-    public String getPassword() {
-        return this.password;
-    }
-
-    public void setPassword(String password) {
+    /**
+     * Use this method to crypt and set user plain password.
+     *
+     * setPassword do only set value ot password. Crypt in setPassword led to encryption already-encrypted value on restore from database.
+     * @param raw value of password
+     */
+    public void password(String password) {
         this.password = crypt(password);
     }
 
@@ -46,9 +48,10 @@ public class User {
             throw new HttpError500("Fail crypt user password", e);
         }
         md.update(login.getBytes());
+        md.update(source.getBytes());
         byte[] bytes = md.digest();
         StringBuilder sb = new StringBuilder();
-        for(int i=0; i< bytes.length ;i++)
+        for(int i=0; i< bytes.length; i++)
         {
             sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
         }

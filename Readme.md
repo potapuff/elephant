@@ -23,7 +23,7 @@ For local development add to `pg_hba.conf` :
     # IPv4 local connections:
     host    all             all             127.0.0.1/32            scram-sha-256
 
-For local server add to `pg_hba.conf` :
+For public server add to `pg_hba.conf` :
 
     # IPv4 local connections:
     host    all             all             0.0.0.0/0            scram-sha-256
@@ -35,6 +35,8 @@ and to `postgresql.conf` change
 to
 
     listen_addresses = '*'
+
+3. Check postgresql bin folder in your classpath (e.i. yore able to start pg_dump / pg_restore without specifying its directory)
 
 ### Config file
 
@@ -58,6 +60,7 @@ environment variables.
 |EMAIL.USER|SMTP user|
 |EMAIL.PASSWORD|SMPT user password |
 |EMAIL.FROM|Value for "mail from" field (mostly same as EMAIL.USER )|
+|EMAIL.SSL| true/false - use or not ssl on connection to SMTP server|
 |DEFAULT_LANG| EN or UK|
 |ENV| PRODUCTION or other . In PRODUCTION mode error page does not show stack traces |
 
@@ -88,9 +91,9 @@ ENV=PRODUCTION
 
 ### Create database
 
-Before start you must create database %DB.NAME% owned to %DB.USERNAME% and seed it by migrations SQL.
+Before start, you must create database %DB.NAME% owned to %DB.USERNAME% and seed it by migrations SQL.
 
-Substitute %KEY% with it's real value.
+Substitute %KEY% with its real value.
 
 ```
 psql -p %DB.PORT% -h %DB.HOST% -U %DB.USERNAME% -c "create database %DB.NAME% owner %DB.USERNAME%;"

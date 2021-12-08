@@ -46,7 +46,7 @@ public class RegistrationController extends AbstractController {
                     .check(it -> it != null && !it.isBlank(), mb.get("validation.password.empty"))
                     .check(ValidatorHelper::isValidPassword, mb.get("validation.password.invalid"))
                     .get();
-            newUser.setPassword(password);
+            newUser.password(password);
 
             newUser.setLanguage(lang);
             UserService.save(newUser);

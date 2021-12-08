@@ -14,7 +14,7 @@ public class Keys {
     public static final String[] PARAMS = {
             "DB.LOCAL_PATH", "DB.PORT", "DB.URL", "DB.NAME", "DB.USERNAME", "DB.OS_USER", "DB.HOST",
             "APP.URL", "APP.PORT",
-            "EMAIL.HOST", "EMAIL.PORT", "EMAIL.USER", "EMAIL.FROM",
+            "EMAIL.HOST", "EMAIL.PORT", "EMAIL.USER", "EMAIL.FROM", "EMAIL.SSL",
             "DEFAULT_LANG", "ENV"
     };
     public static final String[] SECURED_PARAMS = {"DB.PASSWORD", "EMAIL.PASSWORD"};
@@ -69,7 +69,7 @@ public class Keys {
         }
 
         String value = keys.get(key);
-        if (!keys.containsKey(key)) {
+        if (value.isEmpty()) {
             throw new RuntimeException(String.format("No value for key %s", key));
         }
         return value;
